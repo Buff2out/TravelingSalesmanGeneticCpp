@@ -12,32 +12,43 @@ struct Point
     int64_t x = 0;
     int64_t y = 0;
 };
-
-int64_t defineDistance()
+ 
+int64_t defineDistance(Point & a, Point & b)
 {
     int64_t dist = 0;
 
     return dist;
 }
 
+void getPointsFromFile(std::vector<Point>& points, size_t & amountPoints, std::ifstream & fin)
+{
+    for (size_t i = 0; i < amountPoints; ++i)
+    {
+        points.push_back(Point(0, 0));
+        fin >> points[i].x >> points[i].y;
+    }
+}
+
 int main()
 {
     std::ifstream fin;
     std::ofstream fout;
-    size_t amountOfPoints = 0;
-    std::vector<Point> aLotOfPoints;
-    
-    fin.open("input.txt");
-    fin >> amountOfPoints;
-    
-    std::vector<std::vector<double>> graph(amountOfPoints -1, std::vector<double>(amountOfPoints - 1));
+    size_t amountPoints = 0;
 
-    for (size_t i = 0; i < amountOfPoints; ++i)
+    fin.open("input.txt");
+    fin >> amountPoints;
+
+    std::vector<std::vector<double>> graph(amountPoints, std::vector<double>(amountPoints));
+
+    std::vector<Point> points;
+    getPointsFromFile(points, amountPoints, fin);
+    for (size_t i = 0; i < amountPoints; ++i)
     {
-        aLotOfPoints.push_back(Point(0, 0));
-        fin >> aLotOfPoints[i].x >> aLotOfPoints[i].y;
-        fout << aLotOfPoints[i].x << " " << aLotOfPoints[i].y << "\n";
+        std::cout << points[i].x << " " << points[i].y << "\n";
     }
+    
+
+    
     fout.open("output.txt");
     
     std::cout << "Hello World!\n";
