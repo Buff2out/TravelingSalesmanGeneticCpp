@@ -4,23 +4,24 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <cmath>
 
 struct Point
 {
-    Point(int64_t X, int64_t Y) : x(X), y(Y) {}
+    Point(double X, double Y) : x(X), y(Y) {}
 
-    int64_t x = 0;
-    int64_t y = 0;
+    double x = 0;
+    double y = 0;
 };
  
-int64_t defineDistance(Point & a, Point & b)
+double defineDistance(Point & a, Point & b)
 {
-    int64_t dist = 0;
+    double dist = 0;
 
     return dist;
 }
 
-void getPointsFromFile(std::vector<Point>& points, size_t & amountPoints, std::ifstream & fin)
+void getPointsFromFile(std::vector<Point>& points, size_t const & amountPoints, std::ifstream & fin)
 {
     for (size_t i = 0; i < amountPoints; ++i)
     {
@@ -29,29 +30,65 @@ void getPointsFromFile(std::vector<Point>& points, size_t & amountPoints, std::i
     }
 }
 
+void fillEmptyMtrx(std::vector<std::vector<double>>& graph, size_t const & amountPoints)
+{
+    for (size_t i = 0; i < amountPoints; ++i)
+    {
+        for (size_t j = 0; j < amountPoints; ++j)
+        {
+            graph[i][j] = -1;
+        }
+    }
+    for (size_t j = 0; j < amountPoints; ++j)
+    {
+        graph[j][j] = 0;
+    }
+}
+
+void fillDistsToMtrx
+    (
+        std::vector<std::vector<double>>& graph,
+        std::vector<Point>& points,
+        size_t const& amountPoints
+    )
+{
+    for (size_t i = 0; i < amountPoints; ++i)
+    {
+        for (size_t j = i + 1; j < amountPoints; ++j)
+        {
+            graph[j][i] = sqrt(pow((points[j].x - points[i].x), 2) + pow((points[j].y - points[i].y), 2));
+        }
+    }
+}
+
 int main()
 {
     std::ifstream fin;
     std::ofstream fout;
-    size_t amountPoints = 0;
+    size_t amount = 0;
 
     fin.open("input.txt");
-    fin >> amountPoints;
+    fin >> amount;
+    size_t const amountPoints = amount;
 
     std::vector<std::vector<double>> graph(amountPoints, std::vector<double>(amountPoints));
+    //std::vector<int64_t> answerSeq(amountPoints);
 
     std::vector<Point> points;
     getPointsFromFile(points, amountPoints, fin);
+    
+    fillEmptyMtrx(graph, amountPoints);
+    fillDistsToMtrx(graph, points, amountPoints);
     for (size_t i = 0; i < amountPoints; ++i)
     {
-        std::cout << points[i].x << " " << points[i].y << "\n";
+        for (size_t j = 0; j < amountPoints; ++j)
+        {
+            std::cout << graph[i][j] << " ";
+        }
+        std::cout << "\n";
     }
     
-
-    
-    fout.open("output.txt");
-    
-    std::cout << "Hello World!\n";
+    //fout.open("output.txt");
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
