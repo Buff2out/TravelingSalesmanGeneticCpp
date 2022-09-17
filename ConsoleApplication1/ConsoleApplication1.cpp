@@ -51,23 +51,51 @@ void fillDistsToMtrx(std::vector<std::vector<double>>& graph, std::vector<Point>
     }
 }
 
-void createStartPop(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints)
+void createStartPop(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const & k)
 {
-    for (size_t i = 0; i < amountPoints; ++i)
+    for (size_t i = 0; i < amountPoints - k; ++i)
     {
-        for (size_t j = 0; j < amountPoints; ++j)
+        for (size_t j = 0; j < amountPoints - 1; ++j)
         {
-            popul[i][j] = j;
+            popul[i][j] = j + 1;
         }
     }
     for (size_t i = 0; i < amountPoints; ++i)
     {
         std::random_shuffle(popul[i].begin(), popul[i].end());
     }
-    // // check
-    for (size_t i = 0; i < amountPoints; ++i)
+    // // check popul
+    for (size_t i = 0; i < amountPoints - k; ++i)
     {
-        for (size_t j = 0; j < amountPoints; ++j)
+        for (size_t j = 0; j < amountPoints - 1; ++j)
+        {
+            std::cout << popul[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+}
+
+void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
+{
+    std::vector<std::vector<size_t>>::iterator popIt = popul.begin();
+    //костыль который позволяет найти итератор указывающий на середину вектора popul
+    for (size_t i = 0; i < (amountPoints - k); ++i)
+    {
+        ++popIt;
+    }
+    // перемешиваем будущих родителей
+    std::random_shuffle(popul.begin(), popIt);
+    //скрещиваем родителей между собой и порождаем потомков
+    for (size_t i = 0; i < amountPoints - k; i = i + 2)
+    {
+
+    }
+
+
+    // // check popul
+    for (size_t i = 0; i < amountPoints - k; ++i)
+    {
+        for (size_t j = 0; j < amountPoints - 1; ++j)
         {
             std::cout << popul[i][j] << " ";
         }
@@ -86,27 +114,33 @@ int main()
     size_t const amountPoints = amount;
 
     std::vector<std::vector<double>> graph(amountPoints, std::vector<double>(amountPoints));
-    std::vector<std::vector<size_t>> popul(amountPoints, std::vector<size_t>(amountPoints));
 
-    createStartPop(popul, amountPoints);
-    //std::vector<int64_t> answerSeq(amountPoints);
-
+    size_t k = 0;
+    if (amountPoints % 2 == 1)
+    {
+        k = 1;
+    }
+    std::vector<std::vector<size_t>> popul(2 * (amountPoints - k), std::vector<size_t>(amountPoints - 1));
     std::vector<Point> points;
+
+    createStartPop(popul, amountPoints, k);
+    crossOver(popul, amountPoints, k);
     getPointsFromFile(points, amountPoints, fin);
     
     fillEmptyMtrx(graph, amountPoints);
     fillDistsToMtrx(graph, points, amountPoints);
+    //std::vector<int64_t> answerSeq(amountPoints);
 
 
-
-    for (size_t i = 0; i < amountPoints; ++i)
-    {
-        for (size_t j = 0; j < amountPoints; ++j)
-        {
-            std::cout << graph[i][j] << " ";
-        }
-        std::cout << "\n";
-    }
+    //// // check graph
+    //for (size_t i = 0; i < amountPoints; ++i)
+    //{
+    //    for (size_t j = 0; j < amountPoints; ++j)
+    //    {
+    //        std::cout << graph[i][j] << " ";
+    //    }
+    //    std::cout << "\n";
+    //}
     
     //fout.open("output.txt");
 }
