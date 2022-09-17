@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <algorithm>
 
 struct Point
 {
@@ -13,13 +14,6 @@ struct Point
     double x = 0;
     double y = 0;
 };
- 
-double defineDistance(Point & a, Point & b)
-{
-    double dist = 0;
-
-    return dist;
-}
 
 void getPointsFromFile(std::vector<Point>& points, size_t const & amountPoints, std::ifstream & fin)
 {
@@ -45,19 +39,39 @@ void fillEmptyMtrx(std::vector<std::vector<double>>& graph, size_t const & amoun
     }
 }
 
-void fillDistsToMtrx
-    (
-        std::vector<std::vector<double>>& graph,
-        std::vector<Point>& points,
-        size_t const& amountPoints
-    )
+void fillDistsToMtrx(std::vector<std::vector<double>>& graph, std::vector<Point>& points, size_t const& amountPoints)
 {
     for (size_t i = 0; i < amountPoints; ++i)
     {
         for (size_t j = i + 1; j < amountPoints; ++j)
         {
             graph[j][i] = sqrt(pow((points[j].x - points[i].x), 2) + pow((points[j].y - points[i].y), 2));
+            graph[i][j] = graph[j][i];
         }
+    }
+}
+
+void createStartPop(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints)
+{
+    for (size_t i = 0; i < amountPoints; ++i)
+    {
+        for (size_t j = 0; j < amountPoints; ++j)
+        {
+            popul[i][j] = j;
+        }
+    }
+    for (size_t i = 0; i < amountPoints; ++i)
+    {
+        std::random_shuffle(popul[i].begin(), popul[i].end());
+    }
+    // // check
+    for (size_t i = 0; i < amountPoints; ++i)
+    {
+        for (size_t j = 0; j < amountPoints; ++j)
+        {
+            std::cout << popul[i][j] << " ";
+        }
+        std::cout << "\n";
     }
 }
 
@@ -65,13 +79,16 @@ int main()
 {
     std::ifstream fin;
     std::ofstream fout;
-    size_t amount = 0;
 
+    size_t amount = 0;
     fin.open("input.txt");
     fin >> amount;
     size_t const amountPoints = amount;
 
     std::vector<std::vector<double>> graph(amountPoints, std::vector<double>(amountPoints));
+    std::vector<std::vector<size_t>> popul(amountPoints, std::vector<size_t>(amountPoints));
+
+    createStartPop(popul, amountPoints);
     //std::vector<int64_t> answerSeq(amountPoints);
 
     std::vector<Point> points;
@@ -79,6 +96,9 @@ int main()
     
     fillEmptyMtrx(graph, amountPoints);
     fillDistsToMtrx(graph, points, amountPoints);
+
+
+
     for (size_t i = 0; i < amountPoints; ++i)
     {
         for (size_t j = 0; j < amountPoints; ++j)
