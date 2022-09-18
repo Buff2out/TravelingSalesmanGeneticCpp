@@ -64,15 +64,15 @@ void createStartPop(std::vector<std::vector<size_t>>& popul, size_t const& amoun
     {
         std::random_shuffle(popul[i].begin(), popul[i].end());
     }
-    // // check popul
-    for (size_t i = 0; i < amountPoints - k; ++i)
-    {
-        for (size_t j = 0; j < amountPoints - 1; ++j)
-        {
-            std::cout << popul[i][j] << " ";
-        }
-        std::cout << "\n";
-    }
+    //// // check popul
+    //for (size_t i = 0; i < amountPoints - k; ++i)
+    //{
+    //    for (size_t j = 0; j < amountPoints - 1; ++j)
+    //    {
+    //        std::cout << popul[i][j] << " ";
+    //    }
+    //    std::cout << "\n";
+    //}
 }
 
 void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
@@ -92,9 +92,10 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
     // заполн€ем булевый список "трушками"
     for (size_t j = 0; j < amountPoints - 1; ++j) { genBool1.push_back(true); }
     for (size_t j = 0; j < amountPoints - 1; ++j) { genBool2.push_back(true); }
+
     for (size_t i = 0; i < amountPoints - k; i = i + 2)
     {
-        raNum = 1 + rand() % (amountPoints - 2); // -1 (длина хромосомы) -1 (последний элемент)
+        raNum = 1 + rand() % (amountPoints - 1); // -1 (длина хромосомы) -1 (последний элемент)
         size_t j1 = 0;
         // первые raNum генов добавл€ем в потомков
         while (j1 < raNum)
@@ -117,6 +118,8 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
             }
             ++j2;
         }
+        // повторение всего того, но со вторым потомком
+        j2 = 0;
         j1 = j3;
         while (j1 < amountPoints - 1)
         {
@@ -127,11 +130,13 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
             }
             ++j2;
         }
+        for (size_t j = 0; j < amountPoints - 1; ++j) { genBool1[j] = true; }
+        for (size_t j = 0; j < amountPoints - 1; ++j) { genBool2[j] = true; }
     }
 
 
     // // check popul
-    for (size_t i = 0; i < amountPoints - k; ++i)
+    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
     {
         for (size_t j = 0; j < amountPoints - 1; ++j)
         {
