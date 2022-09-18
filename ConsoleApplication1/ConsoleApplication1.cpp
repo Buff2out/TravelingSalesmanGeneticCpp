@@ -85,10 +85,48 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
     }
     // перемешиваем будущих родителей
     std::random_shuffle(popul.begin(), popIt);
-    //скрещиваем родителей между собой и порождаем потомков
+    //скрещиваем перемешавшихся родителей между собой и порождаем потомков
+    std::vector<bool> genBool1; // на самом деле это хромосомный бул? состоящий из бул-генов
+    std::vector<bool> genBool2; // на самом деле это хромосомный бул? состоящий из бул-генов
+    size_t raNum = 0;
+    // заполняем булевый список "трушками"
+    for (size_t j = 0; j < amountPoints - 1; ++j) { genBool1.push_back(true); }
+    for (size_t j = 0; j < amountPoints - 1; ++j) { genBool2.push_back(true); }
     for (size_t i = 0; i < amountPoints - k; i = i + 2)
     {
-
+        raNum = 1 + rand() % (amountPoints - 2); // -1 (длина хромосомы) -1 (последний элемент)
+        size_t j1 = 0;
+        // первые raNum генов добавляем в потомков
+        while (j1 < raNum)
+        {
+            popul[amountPoints - k + i][j1] = popul[i][j1];
+            genBool1[popul[i][j1] - 1] = false;
+            popul[amountPoints - k + i + 1][j1] = popul[i + 1][j1];
+            genBool2[popul[i + 1][j1] - 1] = false;
+            ++j1;
+        }
+        // следующие [raNum; amountPoints - 1) генов добавляем в этих же потомков
+        size_t j2 = 0;
+        size_t j3 = j1;
+        while (j1 < amountPoints - 1)
+        {
+            if (genBool1[popul[i + 1][j2] - 1])
+            {
+                popul[amountPoints - k + i][j1] = popul[i + 1][j2];
+                ++j1;
+            }
+            ++j2;
+        }
+        j1 = j3;
+        while (j1 < amountPoints - 1)
+        {
+            if (genBool2[popul[i][j2] - 1])
+            {
+                popul[amountPoints - k + i + 1][j1] = popul[i][j2];
+                ++j1;
+            }
+            ++j2;
+        }
     }
 
 
