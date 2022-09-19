@@ -15,7 +15,7 @@ struct Point
     double y = 0;
 };
 
-int partition(std::vector<size_t>& arr, size_t low, size_t high, size_t pivot) {
+size_t partition(std::vector<size_t>& arr, size_t low, size_t high, size_t pivot) {
     size_t i = low;
     size_t j = low;
     while (i <= high) 
