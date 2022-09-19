@@ -15,6 +15,36 @@ struct Point
     double y = 0;
 };
 
+int partition(std::vector<size_t>& arr, size_t low, size_t high, size_t pivot) {
+    size_t i = low;
+    size_t j = low;
+    while (i <= high) 
+    {
+        if (arr[i] > pivot)
+        {
+            ++i;
+        }
+        else 
+        {
+            std::swap(arr[i], arr[j]);
+            ++i;
+            ++j;
+        }
+    }
+    return j - 1;
+}
+
+void quickSort(std::vector<size_t>& arr, size_t low, size_t high) {
+    if (low < high) 
+    {
+        size_t pivot = arr[high];
+        size_t pos = partition(arr, low, high, pivot);
+
+        quickSort(arr, low, pos - 1);
+        quickSort(arr, pos + 1, high);
+    }
+}
+
 void getPointsFromFile(std::vector<Point>& points, size_t const & amountPoints, std::ifstream & fin)
 {
     for (size_t i = 0; i < amountPoints; ++i)
@@ -95,7 +125,7 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
 
     for (size_t i = 0; i < amountPoints - k; i = i + 2)
     {
-        raNum = 1 + rand() % (amountPoints - 1); // -1 (длина хромосомы) -1 (последний элемент)
+        raNum = 1 + rand() % (amountPoints - 1); // -1 (длина хромосомы)
         size_t j1 = 0;
         // первые raNum генов добавляем в потомков
         while (j1 < raNum)
@@ -146,6 +176,28 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
     }
 }
 
+void toMutate(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
+{
+    // расслабон, по сравнению со скрещиванием просто инвертируем последовательность элементов в случайном сгенеринном диапазоне
+    size_t a1 = 0, b1 = 0;
+    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    {
+        a1 = rand() % (amountPoints - 2);
+        b1 = a1 + rand() % (amountPoints - 1);
+        for (size_t j = 0; j <= (b1 - a1) / 2; ++j)
+        {
+            std::swap(popul[i][a1 + j], popul[i][b1 - j]);
+        }
+    }
+}
+
+
+
+void selectionAndSort(std::vector<Point>& points, std::vector<std::vector<double>>& graph, std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
+{
+    // а вот селекция это уже серьёзно
+}
+
 int main()
 {
     std::ifstream fin;
@@ -167,11 +219,15 @@ int main()
     std::vector<Point> points;
 
     createStartPop(popul, amountPoints, k);
-    crossOver(popul, amountPoints, k);
+
     getPointsFromFile(points, amountPoints, fin);
     
     fillEmptyMtrx(graph, amountPoints);
     fillDistsToMtrx(graph, points, amountPoints);
+
+    crossOver(popul, amountPoints, k);
+    toMutate(popul, amountPoints, k);
+
     //std::vector<int64_t> answerSeq(amountPoints);
 
 
