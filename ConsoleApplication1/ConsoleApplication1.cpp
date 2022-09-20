@@ -316,6 +316,7 @@ int main()
     {
         fout << popul[0][j] + 1 << " ";
     }
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
