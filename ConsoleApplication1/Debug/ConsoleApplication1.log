@@ -1,10 +1,5 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (ConsoleApplication1.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   ConsoleApplication1.cpp
-C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(52,19): warning C4244: 'argument': conversion from 'int64_t' to 'const unsigned int', possible loss of data
-C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(58,26): warning C4244: 'argument': conversion from 'int64_t' to 'size_t', possible loss of data
-C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(58,23): warning C4244: 'argument': conversion from 'int64_t' to 'size_t', possible loss of data
-C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(59,27): warning C4244: 'argument': conversion from 'int64_t' to 'size_t', possible loss of data
-C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(59,24): warning C4244: 'argument': conversion from 'int64_t' to 'size_t', possible loss of data
-C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(64,14): warning C4244: 'return': conversion from 'int64_t' to 'size_t', possible loss of data
-C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(70,30): warning C4244: 'argument': conversion from 'int64_t' to 'const unsigned int', possible loss of data
+C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(29,28): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\ConsoleApplication1\ConsoleApplication1.cpp(33,28): warning C4018: '<': signed/unsigned mismatch
   ConsoleApplication1.vcxproj -> C:\Users\User\source\repos\TravelingSalesmanGeneticCpp\Debug\TravelingSalesmanGeneticCpp.exe
