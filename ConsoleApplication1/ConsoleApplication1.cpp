@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cmath>
 #include <algorithm>
+#include <iomanip>
 
 struct Point
 {
@@ -210,7 +211,14 @@ void toMutate(std::vector<std::vector<size_t>>& popul, size_t const& amountPoint
     size_t a1 = 0, b1 = 0;
     for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
     {
-        a1 = rand() % (amountPoints - 2);
+        if (amountPoints - 2 == 0)
+        {
+            a1 = 0;
+        }
+        else
+        {
+            a1 = rand() % (amountPoints - 2);
+        }
         b1 = a1 + rand() % (amountPoints - 1 - a1);
         for (size_t j = 0; j <= ((b1 - a1) / 2); ++j)
         {
@@ -302,11 +310,11 @@ int main()
         }
     }
     fout.open("output.txt");
-    fout << dists[0] << "\n";
-    fout << 1;
+    fout << std::setprecision(6) << std::fixed << dists[0] << "\n";
+    fout << 1 << " ";
     for (size_t j = 0; j < amountPoints - 1; ++j)
     {
-        fout << popul[0][j] << " ";
+        fout << popul[0][j] + 1 << " ";
     }
 }
 
