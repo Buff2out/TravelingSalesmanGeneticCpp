@@ -16,37 +16,37 @@ struct Point
     double y = 0;
 };
 
-void swapGens(size_t i, size_t j1, size_t j2, std::vector<std::vector<size_t>>& popul)
+void swapGens(long int i, long int j1, long int j2, std::vector<std::vector<long int>>& popul)
 {
-    size_t temp = popul[i][j1];
+    long int temp = popul[i][j1];
     popul[i][j1] = popul[i][j2];
     popul[i][j2] = temp;
 }
 
-void swapChromo(size_t i1, size_t i2, std::vector<std::vector<size_t>>& popul)
+void swapChromo(long int i1, long int i2, std::vector<std::vector<long int>>& popul)
 {
-    std::vector<size_t> temp;
-    for (size_t j = 0; j < popul[i1].size(); ++j)
+    std::vector<long int> temp;
+    for (long int j = 0; j < popul[i1].size(); ++j)
     {
         temp.push_back(popul[i1][j]);
     }
-    for (size_t j = 0; j < popul[i1].size(); ++j)
+    for (long int j = 0; j < popul[i1].size(); ++j)
     {
         popul[i1][j] = popul[i2][j];
         popul[i2][j] = temp[j];
     }
 }
 
-void swapDists(size_t i1, size_t i2, std::vector<double>& dists)
+void swapDists(long int i1, long int i2, std::vector<double>& dists)
 {
     double temp = dists[i1];
     dists[i1] = dists[i2];
     dists[i2] = temp;
 }
 
-size_t partition(std::vector<double>& dists, std::vector<std::vector<size_t>>& popul, int64_t low, int64_t high, double pivot) {
-    int64_t i = low;
-    int64_t j = low;
+long int partition(std::vector<double>& dists, std::vector<std::vector<long int>>& popul, long int low, long int high, double pivot) {
+    long int i = low;
+    long int j = low;
     while (i <= high) 
     {
         if (dists[i] > pivot)
@@ -64,45 +64,45 @@ size_t partition(std::vector<double>& dists, std::vector<std::vector<size_t>>& p
     return j - 1;
 }
 
-void quickSort(std::vector<double>& dists, std::vector<std::vector<size_t>>&popul, int64_t low, int64_t high) {
+void quickSort(std::vector<double>& dists, std::vector<std::vector<long int>>&popul, long int low, long int high) {
     if (low < high) 
     {
         double pivot = dists[high];
-        int64_t pos = partition(dists, popul, low, high, pivot);
+        long int pos = partition(dists, popul, low, high, pivot);
         quickSort(dists, popul, low, pos - 1);
         quickSort(dists, popul, pos + 1, high);
     }
 }
 
-void getPointsFromFile(std::vector<Point>& points, size_t const & amountPoints, std::ifstream & fin)
+void getPointsFromFile(std::vector<Point>& points, long int const & amountPoints, std::ifstream & fin)
 {
-    for (size_t i = 0; i < amountPoints; ++i)
+    for (long int i = 0; i < amountPoints; ++i)
     {
         points.push_back(Point(0, 0));
         fin >> points[i].x >> points[i].y;
     }
 }
 
-void fillEmptyMtrx(std::vector<std::vector<double>>& graph, size_t const & amountPoints)
+void fillEmptyMtrx(std::vector<std::vector<double>>& graph, long int const & amountPoints)
 {
-    for (size_t i = 0; i < amountPoints; ++i)
+    for (long int i = 0; i < amountPoints; ++i)
     {
-        for (size_t j = 0; j < amountPoints; ++j)
+        for (long int j = 0; j < amountPoints; ++j)
         {
             graph[i][j] = -1;
         }
     }
-    for (size_t j = 0; j < amountPoints; ++j)
+    for (long int j = 0; j < amountPoints; ++j)
     {
         graph[j][j] = 0;
     }
 }
 
-void fillDistsToMtrx(std::vector<std::vector<double>>& graph, std::vector<Point>& points, size_t const& amountPoints)
+void fillDistsToMtrx(std::vector<std::vector<double>>& graph, std::vector<Point>& points, long int const& amountPoints)
 {
-    for (size_t i = 0; i < amountPoints; ++i)
+    for (long int i = 0; i < amountPoints; ++i)
     {
-        for (size_t j = i + 1; j < amountPoints; ++j)
+        for (long int j = i + 1; j < amountPoints; ++j)
         {
             graph[j][i] = sqrt(pow((points[j].x - points[i].x), 2) + pow((points[j].y - points[i].y), 2));
             graph[i][j] = graph[j][i];
@@ -110,23 +110,23 @@ void fillDistsToMtrx(std::vector<std::vector<double>>& graph, std::vector<Point>
     }
 }
 
-void createStartPop(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const & k)
+void createStartPop(std::vector<std::vector<long int>>& popul, long int const& amountPoints, long int const & k)
 {
-    for (size_t i = 0; i < amountPoints - k; ++i)
+    for (long int i = 0; i < amountPoints - k; ++i)
     {
-        for (size_t j = 0; j < amountPoints - 1; ++j)
+        for (long int j = 0; j < amountPoints - 1; ++j)
         {
             popul[i][j] = j + 1;
         }
     }
-    for (size_t i = 0; i < amountPoints; ++i)
+    for (long int i = 0; i < amountPoints; ++i)
     {
         std::random_shuffle(popul[i].begin(), popul[i].end());
     }
     //// // check popul
-    //for (size_t i = 0; i < amountPoints - k; ++i)
+    //for (long int i = 0; i < amountPoints - k; ++i)
     //{
-    //    for (size_t j = 0; j < amountPoints - 1; ++j)
+    //    for (long int j = 0; j < amountPoints - 1; ++j)
     //    {
     //        std::cout << popul[i][j] << " ";
     //    }
@@ -134,11 +134,11 @@ void createStartPop(std::vector<std::vector<size_t>>& popul, size_t const& amoun
     //}
 }
 
-void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
+void crossOver(std::vector<std::vector<long int>>& popul, long int const& amountPoints, long int const& k)
 {
-    std::vector<std::vector<size_t>>::iterator popIt = popul.begin();
+    std::vector<std::vector<long int>>::iterator popIt = popul.begin();
     //костыль который позволяет найти итератор указывающий на середину вектора popul
-    for (size_t i = 0; i < (amountPoints - k); ++i)
+    for (long int i = 0; i < (amountPoints - k); ++i)
     {
         ++popIt;
     }
@@ -147,15 +147,15 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
     //скрещиваем перемешавшихся родителей между собой и порождаем потомков
     std::vector<bool> genBool1; // на самом деле это хромосомный бул? состоящий из бул-генов
     std::vector<bool> genBool2; // на самом деле это хромосомный бул? состоящий из бул-генов
-    size_t raNum = 0;
+    long int raNum = 0;
     // заполняем булевый список "трушками"
-    for (size_t j = 0; j < amountPoints - 1; ++j) { genBool1.push_back(true); }
-    for (size_t j = 0; j < amountPoints - 1; ++j) { genBool2.push_back(true); }
+    for (long int j = 0; j < amountPoints - 1; ++j) { genBool1.push_back(true); }
+    for (long int j = 0; j < amountPoints - 1; ++j) { genBool2.push_back(true); }
 
-    for (size_t i = 0; i < amountPoints - k; i = i + 2)
+    for (long int i = 0; i < amountPoints - k; i = i + 2)
     {
         raNum = 1 + rand() % (amountPoints - 1); // -1 (длина хромосомы)
-        size_t j1 = 0;
+        long int j1 = 0;
         // первые raNum генов добавляем в потомков
         while (j1 < raNum)
         {
@@ -166,8 +166,8 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
             ++j1;
         }
         // следующие [raNum; amountPoints - 1) генов добавляем в этих же потомков
-        size_t j2 = 0;
-        size_t j3 = j1;
+        long int j2 = 0;
+        long int j3 = j1;
         while (j1 < amountPoints - 1)
         {
             if (genBool1[popul[i + 1][j2] - 1])
@@ -189,15 +189,15 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
             }
             ++j2;
         }
-        for (size_t j = 0; j < amountPoints - 1; ++j) { genBool1[j] = true; }
-        for (size_t j = 0; j < amountPoints - 1; ++j) { genBool2[j] = true; }
+        for (long int j = 0; j < amountPoints - 1; ++j) { genBool1[j] = true; }
+        for (long int j = 0; j < amountPoints - 1; ++j) { genBool2[j] = true; }
     }
 
 
     // // check popul
-    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    for (long int i = 0; i < 2 * (amountPoints - k); ++i)
     {
-        for (size_t j = 0; j < amountPoints - 1; ++j)
+        for (long int j = 0; j < amountPoints - 1; ++j)
         {
             std::cout << popul[i][j] << " ";
         }
@@ -205,11 +205,11 @@ void crossOver(std::vector<std::vector<size_t>>& popul, size_t const& amountPoin
     }
 }
 
-void toMutate(std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
+void toMutate(std::vector<std::vector<long int>>& popul, long int const& amountPoints, long int const& k)
 {
     // расслабон, по сравнению со скрещиванием просто инвертируем последовательность элементов в случайном сгенеринном диапазоне
-    size_t a1 = 0, b1 = 0;
-    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    long int a1 = 0, b1 = 0;
+    for (long int i = 0; i < 2 * (amountPoints - k); ++i)
     {
         if (amountPoints - 2 == 0)
         {
@@ -220,18 +220,18 @@ void toMutate(std::vector<std::vector<size_t>>& popul, size_t const& amountPoint
             a1 = rand() % (amountPoints - 2);
         }
         b1 = a1 + rand() % (amountPoints - 1 - a1);
-        for (size_t j = 0; j <= ((b1 - a1) / 2); ++j)
+        for (long int j = 0; j <= ((b1 - a1) / 2); ++j)
         {
             swapGens(i, a1 + j, b1 - j, popul);
         }
     }
 }
 
-double defineDist(std::vector<std::vector<double>>& graph, std::vector<size_t> chromoGen, size_t const& amountPoints, size_t const& k)
+double defineDist(std::vector<std::vector<double>>& graph, std::vector<long int> chromoGen, long int const& amountPoints, long int const& k)
 {
     double summ = 0;
     summ = summ + graph[0][chromoGen[0]];
-    for (size_t j = 0; j < amountPoints - 2; ++j)
+    for (long int j = 0; j < amountPoints - 2; ++j)
     {
         summ = summ + graph[chromoGen[j]][chromoGen[j + 1]];
     }
@@ -239,20 +239,20 @@ double defineDist(std::vector<std::vector<double>>& graph, std::vector<size_t> c
     return summ;
 }
 
-void selectionAndSort(std::vector<double>& dists, std::vector<std::vector<double>>& graph, std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
+void selectionAndSort(std::vector<double>& dists, std::vector<std::vector<double>>& graph, std::vector<std::vector<long int>>& popul, long int const& amountPoints, long int const& k)
 {
     // а вот селекция это уже серьёзно
-    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    for (long int i = 0; i < 2 * (amountPoints - k); ++i)
     {
         dists[i] = defineDist(graph, popul[i], amountPoints, k);
     }
     quickSort(dists, popul, 0, 2 * (amountPoints - k) - 1);
     // отбрасываем "невыживших" (а точнее этого даже делать не надо - всё потом само перепишется на моменте скрещивания
     // check selection
-    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    for (long int i = 0; i < 2 * (amountPoints - k); ++i)
     {
         std::cout << "Расстояние: " << dists[i] << ". Хромосома: ";
-        for (size_t j = 0; j < amountPoints - 1; ++j)
+        for (long int j = 0; j < amountPoints - 1; ++j)
         {
             std::cout << popul[i][j] << " ";
         }
@@ -265,22 +265,22 @@ int main()
     std::ifstream fin;
     std::ofstream fout;
 
-    size_t amount = 0;
+    long int amount = 0;
     fin.open("input.txt");
     fin >> amount;
-    size_t const amountPoints = amount;
+    long int const amountPoints = amount;
 
     std::vector<std::vector<double>> graph(amountPoints, std::vector<double>(amountPoints));
 
-    size_t k = 0;
+    long int k = 0;
     if (amountPoints % 2 == 1)
     {
         k = 1;
     }
-    std::vector<std::vector<size_t>> popul(2 * (amountPoints - k), std::vector<size_t>(amountPoints - 1));
+    std::vector<std::vector<long int>> popul(2 * (amountPoints - k), std::vector<long int>(amountPoints - 1));
     std::vector<Point> points;
     std::vector<double> dists;
-    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    for (long int i = 0; i < 2 * (amountPoints - k); ++i)
     {
         dists.push_back(0);
     }
@@ -292,7 +292,7 @@ int main()
     fillEmptyMtrx(graph, amountPoints);
     fillDistsToMtrx(graph, points, amountPoints);
 
-    size_t summ = 0;
+    long int summ = 0;
     double theBest = -1;
     while (summ != 3)
     {
@@ -312,7 +312,7 @@ int main()
     fout.open("output.txt");
     fout << std::setprecision(6) << std::fixed << dists[0] << "\n";
     fout << 1 << " ";
-    for (size_t j = 0; j < amountPoints - 1; ++j)
+    for (long int j = 0; j < amountPoints - 1; ++j)
     {
         fout << popul[0][j] + 1 << " ";
     }
