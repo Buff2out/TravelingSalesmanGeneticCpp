@@ -231,13 +231,12 @@ double defineDist(std::vector<std::vector<double>>& graph, std::vector<size_t> c
     return summ;
 }
 
-void selectionAndSort(std::vector<std::vector<double>>& graph, std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
+void selectionAndSort(std::vector<double>& dists, std::vector<std::vector<double>>& graph, std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
 {
     // а вот селекция это уже серьёзно
-    std::vector<double> dists;
     for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
     {
-        dists.push_back(defineDist(graph, popul[i], amountPoints, k));
+        dists[i] = defineDist(graph, popul[i], amountPoints, k);
     }
     quickSort(dists, popul, 0, 2 * (amountPoints - k) - 1);
     // отбрасываем "невыживших" (а точнее этого даже делать не надо - всё потом само перепишется на моменте скрещивания
@@ -272,34 +271,43 @@ int main()
     }
     std::vector<std::vector<size_t>> popul(2 * (amountPoints - k), std::vector<size_t>(amountPoints - 1));
     std::vector<Point> points;
+    std::vector<double> dists;
+    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    {
+        dists.push_back(0);
+    }
 
     createStartPop(popul, amountPoints, k);
 
     getPointsFromFile(points, amountPoints, fin);
-    
+
     fillEmptyMtrx(graph, amountPoints);
     fillDistsToMtrx(graph, points, amountPoints);
 
-    // отсюда начинается зацикливание геналгоритма
-    crossOver(popul, amountPoints, k);
-    toMutate(popul, amountPoints, k);
-    selectionAndSort(graph, popul, amountPoints, k);
-    
-
-    //std::vector<int64_t> answerSeq(amountPoints);
-
-
-    //// // check graph
-    //for (size_t i = 0; i < amountPoints; ++i)
-    //{
-    //    for (size_t j = 0; j < amountPoints; ++j)
-    //    {
-    //        std::cout << graph[i][j] << " ";
-    //    }
-    //    std::cout << "\n";
-    //}
-    
-    //fout.open("output.txt");
+    size_t summ = 0;
+    double theBest = -1;
+    while (summ != 3)
+    {
+        crossOver(popul, amountPoints, k);
+        toMutate(popul, amountPoints, k);
+        selectionAndSort(dists, graph, popul, amountPoints, k);
+        if (theBest == dists[0])
+        {
+            ++summ;
+        }
+        else
+        {
+            theBest = dists[0];
+            summ = 0;
+        }
+    }
+    fout.open("output.txt");
+    fout << dists[0] << "\n";
+    fout << 1;
+    for (size_t j = 0; j < amountPoints - 1; ++j)
+    {
+        fout << popul[0][j] << " ";
+    }
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
