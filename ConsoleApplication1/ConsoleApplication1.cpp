@@ -194,15 +194,15 @@ void crossOver(std::vector<std::vector<long int>>& popul, long int const& amount
     }
 
 
-    // // check popul
-    for (long int i = 0; i < 2 * (amountPoints - k); ++i)
-    {
-        for (long int j = 0; j < amountPoints - 1; ++j)
-        {
-            std::cout << popul[i][j] << " ";
-        }
-        std::cout << "\n";
-    }
+    //// // check popul
+    //for (long int i = 0; i < 2 * (amountPoints - k); ++i)
+    //{
+    //    for (long int j = 0; j < amountPoints - 1; ++j)
+    //    {
+    //        std::cout << popul[i][j] << " ";
+    //    }
+    //    std::cout << "\n";
+    //}
 }
 
 void toMutate(std::vector<std::vector<long int>>& popul, long int const& amountPoints, long int const& k)
@@ -248,16 +248,16 @@ void selectionAndSort(std::vector<double>& dists, std::vector<std::vector<double
     }
     quickSort(dists, popul, 0, 2 * (amountPoints - k) - 1);
     // отбрасываем "невыживших" (а точнее этого даже делать не надо - всё потом само перепишется на моменте скрещивания
-    // check selection
-    for (long int i = 0; i < 2 * (amountPoints - k); ++i)
-    {
-        std::cout << "Расстояние: " << dists[i] << ". Хромосома: ";
-        for (long int j = 0; j < amountPoints - 1; ++j)
-        {
-            std::cout << popul[i][j] << " ";
-        }
-        std::cout << "\n";
-    }
+    //// check selection
+    //for (long int i = 0; i < 2 * (amountPoints - k); ++i)
+    //{
+    //    std::cout << "Расстояние: " << dists[i] << ". Хромосома: ";
+    //    for (long int j = 0; j < amountPoints - 1; ++j)
+    //    {
+    //        std::cout << popul[i][j] << " ";
+    //    }
+    //    std::cout << "\n";
+    //}
 }
 
 int main()
