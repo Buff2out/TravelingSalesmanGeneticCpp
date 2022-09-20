@@ -15,18 +15,47 @@ struct Point
     double y = 0;
 };
 
-size_t partition(std::vector<size_t>& arr, size_t low, size_t high, size_t pivot) {
-    size_t i = low;
-    size_t j = low;
+void swapGens(size_t i, size_t j1, size_t j2, std::vector<std::vector<size_t>>& popul)
+{
+    size_t temp = popul[i][j1];
+    popul[i][j1] = popul[i][j2];
+    popul[i][j2] = temp;
+}
+
+void swapChromo(size_t i1, size_t i2, std::vector<std::vector<size_t>>& popul)
+{
+    std::vector<size_t> temp;
+    for (size_t j = 0; j < popul[i1].size(); ++j)
+    {
+        temp.push_back(popul[i1][j]);
+    }
+    for (size_t j = 0; j < popul[i1].size(); ++j)
+    {
+        popul[i1][j] = popul[i2][j];
+        popul[i2][j] = temp[j];
+    }
+}
+
+void swapDists(size_t i1, size_t i2, std::vector<double>& dists)
+{
+    double temp = dists[i1];
+    dists[i1] = dists[i2];
+    dists[i2] = temp;
+}
+
+size_t partition(std::vector<double>& dists, std::vector<std::vector<size_t>>& popul, int64_t low, int64_t high, double pivot) {
+    int64_t i = low;
+    int64_t j = low;
     while (i <= high) 
     {
-        if (arr[i] > pivot)
+        if (dists[i] > pivot)
         {
             ++i;
         }
         else 
         {
-            std::swap(arr[i], arr[j]);
+            swapDists(i, j, dists);
+            swapChromo(i, j, popul);
             ++i;
             ++j;
         }
@@ -34,14 +63,13 @@ size_t partition(std::vector<size_t>& arr, size_t low, size_t high, size_t pivot
     return j - 1;
 }
 
-void quickSort(std::vector<size_t>& arr, size_t low, size_t high) {
+void quickSort(std::vector<double>& dists, std::vector<std::vector<size_t>>&popul, int64_t low, int64_t high) {
     if (low < high) 
     {
-        size_t pivot = arr[high];
-        size_t pos = partition(arr, low, high, pivot);
-
-        quickSort(arr, low, pos - 1);
-        quickSort(arr, pos + 1, high);
+        double pivot = dists[high];
+        int64_t pos = partition(dists, popul, low, high, pivot);
+        quickSort(dists, popul, low, pos - 1);
+        quickSort(dists, popul, pos + 1, high);
     }
 }
 
@@ -183,19 +211,46 @@ void toMutate(std::vector<std::vector<size_t>>& popul, size_t const& amountPoint
     for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
     {
         a1 = rand() % (amountPoints - 2);
-        b1 = a1 + rand() % (amountPoints - 1);
-        for (size_t j = 0; j <= (b1 - a1) / 2; ++j)
+        b1 = a1 + rand() % (amountPoints - 1 - a1);
+        for (size_t j = 0; j <= ((b1 - a1) / 2); ++j)
         {
-            std::swap(popul[i][a1 + j], popul[i][b1 - j]);
+            swapGens(i, a1 + j, b1 - j, popul);
         }
     }
 }
 
+double defineDist(std::vector<std::vector<double>>& graph, std::vector<size_t> chromoGen, size_t const& amountPoints, size_t const& k)
+{
+    double summ = 0;
+    summ = summ + graph[0][chromoGen[0]];
+    for (size_t j = 0; j < amountPoints - 2; ++j)
+    {
+        summ = summ + graph[chromoGen[j]][chromoGen[j + 1]];
+    }
+    summ = summ + graph[0][chromoGen[amountPoints - 2]];
+    return summ;
+}
 
-
-void selectionAndSort(std::vector<Point>& points, std::vector<std::vector<double>>& graph, std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
+void selectionAndSort(std::vector<std::vector<double>>& graph, std::vector<std::vector<size_t>>& popul, size_t const& amountPoints, size_t const& k)
 {
     // а вот селекция это уже серьёзно
+    std::vector<double> dists;
+    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    {
+        dists.push_back(defineDist(graph, popul[i], amountPoints, k));
+    }
+    quickSort(dists, popul, 0, 2 * (amountPoints - k) - 1);
+    // отбрасываем "невыживших" (а точнее этого даже делать не надо - всё потом само перепишется на моменте скрещивания
+    // check selection
+    for (size_t i = 0; i < 2 * (amountPoints - k); ++i)
+    {
+        std::cout << "Расстояние: " << dists[i] << ". Хромосома: ";
+        for (size_t j = 0; j < amountPoints - 1; ++j)
+        {
+            std::cout << popul[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
 }
 
 int main()
@@ -225,8 +280,11 @@ int main()
     fillEmptyMtrx(graph, amountPoints);
     fillDistsToMtrx(graph, points, amountPoints);
 
+    // отсюда начинается зацикливание геналгоритма
     crossOver(popul, amountPoints, k);
     toMutate(popul, amountPoints, k);
+    selectionAndSort(graph, popul, amountPoints, k);
+    
 
     //std::vector<int64_t> answerSeq(amountPoints);
 
